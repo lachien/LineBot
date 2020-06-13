@@ -58,6 +58,7 @@ def getNews():
     return tmp
 
 from bs4 import BeautifulSoup
+import requests
 
 def movie(num):
     num = int(num)
