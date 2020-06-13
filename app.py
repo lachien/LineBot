@@ -12,10 +12,10 @@ from linebot.models import *
 app = Flask(__name__)
 
 # Channel access token (long-lived)
-line_bot_api = LineBotApi('')
+line_bot_api = LineBotApi('AxBw8vdskHz9Gr6Jjt4/MMt94NQiJ3Tn9m2BuoXRKlYMQCJlZBI0fHfXheRS/EZr2L8xcIQC69EsaRyKJHGBSEztWQ0ZswMm6iPRIcNq20954TrBCFskCac7Q+kscK+HzJ9XPVWCBjV4bngeulTNXAdB04t89/1O/w1cDnyilFU=')
 
 # Channel secret 
-handler = WebhookHandler('')
+handler = WebhookHandler('f2da671e3e4fd085e7940ee78ed55a33')
 
 
 @app.route("/callback", methods=['POST'])
@@ -68,8 +68,6 @@ def handle_message(event):
             original_content_url='https://i.imgur.com/QPJ8A1b.png',
             preview_image_url='https://i.imgur.com/QPJ8A1b.png'
         )
-
-
     # 傳送貼圖
     elif event.message.text == '傳送貼圖':
         message = StickerSendMessage(
