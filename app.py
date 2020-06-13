@@ -7,22 +7,19 @@ from linebot import (
 from linebot.exceptions import (
     InvalidSignatureError
 )
-from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage,
-)
+from linebot.models import *
 
 app = Flask(__name__)
 
-line_bot_api = LineBotApi('AxBw8vdskHz9Gr6Jjt4/MMt94NQiJ3Tn9m2BuoXRKlYMQCJlZBI0fHfXheRS/EZr2L8xcIQC69EsaRyKJHGBSEztWQ0ZswMm6iPRIcNq20954TrBCFskCac7Q+kscK+HzJ9XPVWCBjV4bngeulTNXAdB04t89/1O/w1cDnyilFU=')
 # Channel access token (long-lived)
-handler = WebhookHandler('f2da671e3e4fd085e7940ee78ed55a33')
-# Channel secret 
+line_bot_api = LineBotApi('')
 
+# Channel secret 
+handler = WebhookHandler('')
 
 
 @app.route("/callback", methods=['POST'])
 def callback():
-
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
 
@@ -38,13 +35,37 @@ def callback():
 
     return 'OK'
 
+def getNews():
+	"""
+	建立一個抓最新消息的function
+	"""
+	import requests
+	import re
+	from bs4 import BeautifulSoup
 
+	url = 'https://www.ettoday.net/news/focus/3C%E5%AE%B6%E9%9B%BB/'
+	r = requests.get(url)
+	reponse = r.text
+
+	url_list = re.findall(r'<h3><a href="/news/[\d]*/[\d]*.htm" .*>.*</a>',reponse)
+
+	soup = BeautifulSoup(url_list[0])
+	url = 'https://fashion.ettoday.net/' + soup.find('a')['href']
+	title = soup.text
+
+
+	tmp = title + ': ' +url
+	return tmp
+	
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=event.message.text))
- 
+    # 傳送文字
+    if event.message.text == '傳送文字':
+        message = TextSendMessage(getNews())
+	else:
+        message = TextSendMessage(text=event.message.text)
+    line_bot_api.reply_message(event.reply_token, message)
 
+	
 if __name__ == '__main__':
     app.run(debug=True)
